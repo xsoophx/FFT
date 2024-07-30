@@ -41,17 +41,18 @@ object FFTProcessor {
     }
 
     fun process(
-        inputSample: Sequence<Double>,
+        inputSamples: Sequence<Double>,
         samplingRate: Int,
         method: Method = Method.FFT_IN_PLACE,
         windowFunction: WindowFunction? = null,
-    ): FFTData = process(sequenceOf(inputSample), samplingRate, method, windowFunction).first()
+    ): FFTData = process(sequenceOf(inputSamples), samplingRate, method, windowFunction).first()
 
     fun process(
-        inputSample: List<Double>,
+        inputSamples: List<Double>,
         samplingRate: Int,
         method: Method = Method.FFT_IN_PLACE,
-    ): FFTData = process(inputSample.asSequence(), samplingRate, method)
+        windowFunction: WindowFunction? = null,
+    ): FFTData = process(inputSamples.asSequence(), samplingRate, method, windowFunction)
 
     fun processWav(
         wav: Wav,

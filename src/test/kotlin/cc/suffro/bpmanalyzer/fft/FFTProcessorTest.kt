@@ -8,9 +8,7 @@ import cc.suffro.bpmanalyzer.fft.data.FftSampleSize
 import cc.suffro.bpmanalyzer.fft.data.Method
 import cc.suffro.bpmanalyzer.fft.data.Sample
 import cc.suffro.bpmanalyzer.fft.data.WindowFunction
-import cc.suffro.bpmanalyzer.fft.data.blackmanFunction
-import cc.suffro.bpmanalyzer.fft.data.hammingFunction
-import cc.suffro.bpmanalyzer.fft.data.hanningFunction
+import cc.suffro.bpmanalyzer.fft.data.WindowFunctionType
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -114,10 +112,10 @@ class FFTProcessorTest : BaseTest() {
     ) {
         val frequency = 430
         val signal = getSignalByFrequency(frequency)
-        val functions = listOf(::hammingFunction, ::blackmanFunction, ::hanningFunction)
+        val functions = listOf(WindowFunctionType.HAMMING, WindowFunctionType.BLACKMAN, WindowFunctionType.HANNING)
 
         functions.forEach { function ->
-            val actual = processWindow(input = signal, samplingRate = DEFAULT_SAMPLING_RATE, windowFunction = function)
+            val actual = processWindow(input = signal, samplingRate = DEFAULT_SAMPLING_RATE, windowFunction = function.function)
             val magnitudes = actual.magnitudes
 
             val maximumIndex = magnitudes.indexOf(magnitudes.maxOf { it })

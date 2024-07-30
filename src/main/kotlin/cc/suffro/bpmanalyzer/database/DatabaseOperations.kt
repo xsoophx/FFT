@@ -9,6 +9,8 @@ interface DatabaseOperations {
         bpm: Double,
     ): Int
 
+    fun saveTrackInfo(trackInfo: TrackInfo): Int = saveTrackInfo(trackInfo.trackName, trackInfo.bpm)
+
     fun getTrackInfo(trackName: String): TrackInfo?
 
     fun getTrackInfo(trackName: Path): TrackInfo?

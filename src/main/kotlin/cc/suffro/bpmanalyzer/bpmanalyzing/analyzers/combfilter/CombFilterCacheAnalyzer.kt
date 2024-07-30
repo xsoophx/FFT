@@ -1,7 +1,6 @@
 package cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.combfilter
 
 import cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.AnalyzerParams
-import cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.BpmAnalyzer
 import cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.CacheAnalyzer
 import cc.suffro.bpmanalyzer.data.TrackInfo
 import cc.suffro.bpmanalyzer.database.DatabaseOperations
@@ -12,7 +11,7 @@ import mu.KotlinLogging
 import java.nio.file.Path
 
 class CombFilterCacheAnalyzer(
-    private val analyzer: BpmAnalyzer,
+    private val analyzer: Analyzer<Wav, TrackInfo>,
     private val database: DatabaseOperations,
     private val wavReader: FileReader<Wav>,
 ) : CacheAnalyzer<Wav, TrackInfo> {
@@ -38,27 +37,25 @@ class CombFilterCacheAnalyzer(
         val windowFunction = params.windowFunction
 
         val trackInfoFromDb = database.getTrackInfo(data.filePath)
-        return trackInfoFromDb ?: database.saveAndReturnTrack(data.filePath, data, start, windowFunction)
+        return trackInfoFromDb ?: database.analyzeAndSave(data.filePath, data, start, windowFunction)
     }
 
-    private fun DatabaseOperations.saveAndReturnTrack(
+    private fun DatabaseOperations.analyzeAndSave(
         trackName: Path,
         wav: Wav,
         start: Double,
         windowFunction: WindowFunction?,
     ): TrackInfo {
-        return saveAndReturnTrack(trackName.toString(), wav, start, windowFunction)
+        return analyzeAndSave(trackName.toString(), wav, start, windowFunction)
     }
 
-    private fun DatabaseOperations.saveAndReturnTrack(
+    private fun DatabaseOperations.analyzeAndSave(
         trackName: String,
         wav: Wav,
         start: Double,
         windowFunction: WindowFunction?,
     ): TrackInfo {
-        val bpm = analyze(trackName, wav, start, windowFunction)
-        saveTrackInfo(trackName, bpm)
-        return TrackInfo(trackName, bpm)
+        return analyze(trackName, wav, start, windowFunction).also(::saveTrackInfo)
     }
 
     private fun analyze(
@@ -66,7 +63,7 @@ class CombFilterCacheAnalyzer(
         wav: Wav,
         start: Double,
         windowFunction: WindowFunction?,
-    ): Double {
+    ): TrackInfo {
         require(path.isNotEmpty()) { "Please provide a path to your audio file." }
         require(path.endsWith(".wav")) { "Please provide a .wav file." }
 

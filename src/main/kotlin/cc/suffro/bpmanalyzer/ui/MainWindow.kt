@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 private val logger = KotlinLogging.logger {}
 
-class MainWindow : CoroutineScope {
+internal class MainWindow : CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.JavaFx
 
     private fun xScale(

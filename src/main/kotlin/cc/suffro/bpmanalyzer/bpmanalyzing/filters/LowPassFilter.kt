@@ -10,19 +10,24 @@ import org.kotlinmath.Complex
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class LowPassFilter(private val fftProcessor: FFTProcessor) {
+object LowPassFilter {
+    fun process(
+        window: TimeDomainWindow,
+        sampleRate: Int,
+    ): Signal {
+        val fullWaveRectified = TimeDomainWindow(window.map(::abs), window.duration, window.startingTime)
+        val numSamples = (window.duration * 2 * sampleRate).roundToInt()
+        val halfHanningWindow = getHalfOfHanningWindow(numSamples)
+        val (first, second) = processSignals(fullWaveRectified, halfHanningWindow, sampleRate)
+
+        val convolved = convolve(first, second)
+        return FFTProcessor.processInverse(convolved)
+    }
+
     fun process(
         window: TimeDomainWindow,
         fmtChunk: FmtChunk,
-    ): Signal {
-        val fullWaveRectified = TimeDomainWindow(window.map(::abs), window.duration, window.startingTime)
-        val numSamples = (window.duration * 2 * fmtChunk.sampleRate).roundToInt()
-        val halfHanningWindow = getHalfOfHanningWindow(numSamples)
-        val (first, second) = processSignals(fullWaveRectified, halfHanningWindow, fmtChunk.sampleRate)
-
-        val convolved = convolve(first, second)
-        return fftProcessor.processInverse(convolved)
-    }
+    ) = process(window, fmtChunk.sampleRate)
 
     private fun processSignals(
         a: Sequence<Double>,
@@ -30,8 +35,8 @@ class LowPassFilter(private val fftProcessor: FFTProcessor) {
         sampleRate: Int,
     ): Pair<List<Complex>, List<Complex>> {
         val size = getSmallerSizeOf(a.count(), b.count())
-        val first = fftProcessor.process(a.take(size), sampleRate).output
-        val second = fftProcessor.process(b.take(size), sampleRate).output
+        val first = FFTProcessor.process(a.take(size), sampleRate).output
+        val second = FFTProcessor.process(b.take(size), sampleRate).output
         return first to second
     }
 

@@ -13,7 +13,7 @@ import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Path
 
-class TrackMerger(
+internal class TrackMerger(
     private val cacheAnalyzer: CacheAnalyzer<Wav, TrackInfo>,
     private val speedAdjuster: SpeedAdjuster,
     private val startingPositionAnalyzer: CacheAnalyzer<Wav, StartingPosition>,

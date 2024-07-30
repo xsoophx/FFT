@@ -2,6 +2,7 @@ package cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.combfilter
 
 import cc.suffro.bpmanalyzer.BaseTest
 import cc.suffro.bpmanalyzer.assertNearlyEquals
+import cc.suffro.bpmanalyzer.data.TrackInfo
 import cc.suffro.bpmanalyzer.wav.data.FileReader
 import cc.suffro.bpmanalyzer.wav.data.Wav
 import org.junit.jupiter.api.Test
@@ -18,17 +19,19 @@ class CombFilterAnalyzerTest : BaseTest() {
 
     @Test
     fun `should detect correct BPM for plain kicks`() {
-        val wav = wavReader.read("src/test/resources/samples/120bpm_140Hz.wav")
+        val path = "src/test/resources/samples/120bpm_140Hz.wav"
+        val wav = wavReader.read(path)
         val result = combFilterAnalyzer.analyze(wav)
-        assertEquals(expected = 120.0, actual = result)
+        assertEquals(expected = TrackInfo(path, 120.0), actual = result)
     }
 
     @Test
     fun `should detect correct BPM for refined values`() {
-        val wav = wavReader.read("src/test/resources/samples/120-5bpm_140Hz.wav")
+        val path = "src/test/resources/samples/120-5bpm_140Hz.wav"
+        val wav = wavReader.read(path)
         val analyzerParams = CombFilterAnalyzerParams(refinementParams = RefinementParams())
         val result = combFilterAnalyzer.analyze(wav, analyzerParams)
-        assertEquals(expected = 120.5, actual = result)
+        assertEquals(expected = TrackInfo(path, 120.5), actual = result)
     }
 
     @ParameterizedTest
@@ -39,6 +42,6 @@ class CombFilterAnalyzerTest : BaseTest() {
     ) {
         val wav = wavReader.read(trackPath)
         val result = combFilterAnalyzer.analyze(wav)
-        assertNearlyEquals(expected = bpm, actual = result)
+        assertNearlyEquals(expected = bpm, actual = result.bpm)
     }
 }

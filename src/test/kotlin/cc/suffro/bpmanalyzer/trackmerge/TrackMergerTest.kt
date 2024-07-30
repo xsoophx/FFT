@@ -1,18 +1,23 @@
-package cc.suffro.bpmanalyzer
+package cc.suffro.bpmanalyzer.trackmerge
 
+import cc.suffro.bpmanalyzer.BaseTest
+import cc.suffro.bpmanalyzer.TrackMerger
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.TestInstance
 import org.koin.test.inject
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+// TODO: check Koin dependency
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class TrackMergerTest : BaseTest() {
     private val trackMerger by inject<TrackMerger>()
 
-    private val first = tracksWithBpm.entries.first()
-    private val second = tracksWithBpm.entries.last()
-    private val path = trackMerger.getMergedPathByPaths(first.key, second.key)
+    private val first = tracksWithBpm.first()
+    private val second = tracksWithBpm.first()
+    private val path = trackMerger.getMergedPathByPaths(first.path, second.path)
 
     @AfterEach
     fun cleanUp() {
@@ -27,7 +32,7 @@ class TrackMergerTest : BaseTest() {
         val targetBpm = 140.0
         assertTrue(!File(path).exists())
 
-        trackMerger.merge(first.toPair(), second.toPair(), targetBpm)
+        trackMerger.merge(first.path to first.bpm, second.path to second.bpm, targetBpm)
         assertTrue(File(path).exists())
     }
 

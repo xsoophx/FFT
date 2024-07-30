@@ -4,6 +4,7 @@ import cc.suffro.bpmanalyzer.fft.data.FftSampleSize
 import cc.suffro.bpmanalyzer.fft.data.TimeDomainWindow
 import cc.suffro.bpmanalyzer.getHighestPowerOfTwo
 import java.nio.file.Path
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 data class DataChunk(
@@ -55,6 +56,35 @@ data class Wav(
         wav.fmtChunk,
         DataChunk(dataChunks.first().size * wav.fmtChunk.numChannels * wav.fmtChunk.bitsPerSample / 8, dataChunks),
     )
+
+    fun headerIsEqualTo(other: Wav): Boolean {
+        if (this === other) return true
+
+        if (filePath != other.filePath) return false
+        if (fmtChunk != other.fmtChunk) return false
+
+        return true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Wav) return false
+
+        if (filePath != other.filePath) return false
+        if (fmtChunk != other.fmtChunk) return false
+        if (dataChunk.dataChunkSize != other.dataChunk.dataChunkSize) return false
+        if (!dataChunk.data.contentDeepEquals(other.dataChunk.data)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = filePath.hashCode()
+        result = 31 * result + fmtChunk.hashCode()
+        result = 31 * result + dataChunk.dataChunkSize.hashCode()
+        result = 31 * result + dataChunk.data.contentDeepHashCode()
+        return result
+    }
 
     private var defaultChannel = 0
         set(channel) {
@@ -171,5 +201,12 @@ data class Wav(
                 .map { index -> dataChunk.data[channel].get(index, numSamples) }
 
         return samples.mapIndexed { index, sample -> TimeDomainWindow(sample, interval, index * interval) }
+    }
+
+    private fun nearlyEquals(
+        epsilonDataSize: Int,
+        other: Int,
+    ): Boolean {
+        return abs(dataChunk.dataChunkSize - other) < epsilonDataSize
     }
 }

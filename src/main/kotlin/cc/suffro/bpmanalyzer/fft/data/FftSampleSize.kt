@@ -7,7 +7,10 @@ value class FftSampleSize(val size: Int) {
     }
 
     companion object {
+        const val TWO_HUNDRED = 256
+        const val FIVE_HUNDRED = 512
         const val DEFAULT = 1024
         const val TWO_THOUSAND = 2048
+        const val FOUR_THOUSAND = 4096
     }
 }

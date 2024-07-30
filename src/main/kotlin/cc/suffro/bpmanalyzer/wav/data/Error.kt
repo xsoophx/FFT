@@ -1,6 +1,6 @@
 package cc.suffro.bpmanalyzer.wav.data
 
-enum class ErrorType {
+internal enum class ErrorType {
     NOT_A_RIFF,
     NOT_A_WAV,
     UNEXPECTED_DATA_SIGNATURE,
@@ -20,7 +20,7 @@ enum class ErrorType {
         }
 }
 
-data class Error(
+internal data class Error(
     val type: ErrorType,
     var message: String = "",
 ) {

@@ -5,6 +5,12 @@ import kotlin.math.cos
 
 typealias WindowFunction = (Int, Int) -> Double
 
+enum class WindowFunctionType(val function: WindowFunction) {
+    HAMMING(::hammingFunction),
+    BLACKMAN(::blackmanFunction),
+    HANNING(::hanningFunction),
+}
+
 fun hammingFunction(
     i: Int,
     length: Int,

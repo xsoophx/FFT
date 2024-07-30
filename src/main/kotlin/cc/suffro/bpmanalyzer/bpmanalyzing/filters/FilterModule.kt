@@ -4,7 +4,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val filterModule =
+internal val filterModule =
     module {
         singleOf(::CombFilter)
         singleOf(::CombFilterOperationsImpl) {

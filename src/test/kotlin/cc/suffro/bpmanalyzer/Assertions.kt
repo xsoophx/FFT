@@ -28,7 +28,17 @@ fun assertNearlyEquals(
 fun assertNearlyEquals(
     expected: Double,
     actual: Double,
-    e: Int = 2,
+    e: Int,
+    exclusive: Boolean = true,
+    message: String? = null,
+) {
+    assertTrue(actual.closeTo(expected, e, exclusive), message ?: "Expected <$expected>, actual <$actual>.")
+}
+
+fun assertNearlyEquals(
+    expected: Int,
+    actual: Int,
+    e: Int,
     exclusive: Boolean = true,
     message: String? = null,
 ) {

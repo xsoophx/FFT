@@ -1,8 +1,9 @@
 plugins {
     application
-    kotlin("jvm") version "2.0.0-Beta3"
+    kotlin("jvm") version "1.9.23"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     id("org.openjfx.javafxplugin") version "0.1.0"
+    id("maven-publish")
 }
 
 group = "cc.suffro"
@@ -59,7 +60,7 @@ dependencies {
 
     implementation("org.xerial:sqlite-jdbc:${Version.JDBC}")
 
-    implementation("io.insert-koin:koin-core:${Version.KOIN}")
+    api("io.insert-koin:koin-core:${Version.KOIN}")
     implementation("io.insert-koin:koin-test:${Version.KOIN_TEST}") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-test-junit")
     }
@@ -107,5 +108,56 @@ tasks {
         useJUnitPlatform()
         minHeapSize = "512m"
         maxHeapSize = "4096m"
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("kymatik") {
+            from(components["java"])
+
+            group = "cc.suffro"
+            artifactId = "kymatik"
+            version = "0.1.0"
+
+            pom {
+                name.set("BPM Analyzer")
+                description.set("A Kotlin library for audio analysis: FFT, pitch shifting and accurate BPM detection for audio files.")
+                url.set("https://example.com/my-library")
+
+                licenses {
+                    license {
+                        name.set("The MIT License")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("xsoophx")
+                        name.set("Sophia Köhler")
+                        email.set("ccsophia.koehler@gmail.com")
+                    }
+                }
+
+                scm {
+                    // url.set("https://example.com/my-library.git")
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
+kotlin {
+    sourceSets {
+        main {
+            kotlin.srcDirs("src/main/kotlin")
+        }
+        test {
+            kotlin.srcDirs("src/test/kotlin")
+        }
     }
 }

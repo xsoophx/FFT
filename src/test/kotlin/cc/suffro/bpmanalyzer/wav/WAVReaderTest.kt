@@ -12,7 +12,6 @@ import cc.suffro.bpmanalyzer.wav.data.Wav
 import cc.suffro.bpmanalyzer.wav.data.WindowProcessingParams
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
@@ -22,7 +21,6 @@ import java.util.stream.Stream
 import kotlin.io.path.Path
 import kotlin.test.assertEquals
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag(FFT)
 class WAVReaderTest : BaseTest() {
     private val wavReader by inject<FileReader<Wav>>()

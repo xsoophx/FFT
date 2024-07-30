@@ -6,14 +6,12 @@ import cc.suffro.bpmanalyzer.bpmanalyzing.analyzers.CacheAnalyzer
 import cc.suffro.bpmanalyzer.bpmanalyzing.data.Bpm
 import cc.suffro.bpmanalyzer.wav.data.FileReader
 import cc.suffro.bpmanalyzer.wav.data.Wav
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.test.inject
 import java.util.stream.Stream
-import kotlin.test.assertEquals
 
 class StartingPositionAnalyzerTest : BaseTest() {
     private val wavReader by inject<FileReader<Wav>>()
@@ -38,13 +36,12 @@ class StartingPositionAnalyzerTest : BaseTest() {
     }
 
     @Test
-    @Disabled
     fun `should analyze delayed track`() {
         val path = "src/test/resources/tracks/Lucinee, MRD - Bang Juice (MRD Remix).wav"
         val wav = wavReader.read(path)
         val result = startingPositionAnalyzer.analyze(wav, StartingPositionCacheAnalyzerParams(144.0))
 
-        assertEquals(result.startInSec, 0.8)
+        assertNearlyEquals(0.8, result.startInSec, 0.2)
     }
 
     companion object {

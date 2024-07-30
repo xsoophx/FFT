@@ -19,6 +19,8 @@ fun getHighestPowerOfTwo(number: Int): Int {
     return result xor (result shr 1)
 }
 
+fun isPowerOfTwo(number: Int): Boolean = number and (number - 1) == 0
+
 data class Interval<T>(
     val lowerBound: T,
     val upperBound: T,
